@@ -6,12 +6,35 @@ import { createWire } from './scene/wires.js';
 import { createLed } from './components/led.js';
 import { PinBus } from './sim/pinbus.js';
 import { SketchRunner } from './sim/runtime.js';
+import { createEditor } from './editor/editor.js';
+import { createSerialMonitor } from './ui/serialMonitor.js';
+import { createToolbar } from './ui/toolbar.js';
+import { t } from './i18n/index.js';
 
-const canvas = document.getElementById('scene');
-const { scene } = createScene(canvas);
+const $ = (id) => document.getElementById(id);
+$('loading').textContent = t('ui.carregando');
+$('scene').setAttribute('aria-label', t('ui.cena'));
+$('code-title').textContent = t('ui.editor');
+
+const DEFAULT_CODE = `// Pisca LED: acende e apaga o LED do pino 13
+void setup() {
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(13, HIGH);
+  delay(1000);
+  digitalWrite(13, LOW);
+  delay(1000);
+}
+`;
+
+const canvas = $('scene');
+const { engine, scene } = createScene(canvas);
+new ResizeObserver(() => engine.resize()).observe($('stage'));
 const bus = new PinBus();
 
-const board = createBoard(scene);
+createBoard(scene);
 
 // LED no pino 13, ao lado da placa, ligado por fios (D13 → anodo, GND → catodo).
 const led = createLed(scene, { id: 'led1', pino: 13, cor: 'vermelho', position: new Vector3(-0.2, 0.7, 4.3) });
@@ -20,23 +43,24 @@ const at = (name) => led.root.position.add(new Vector3(...led.anchors[name]));
 createWire(scene, pinPositions.D13, at('anodo'), 'amarelo');
 createWire(scene, pinPositions.GND, at('catodo'), 'preto');
 
-// Depuração temporária da Fase 1 (substituída pelo simulador na Fase 2).
-window.__bus = bus;
-// Simulador: acessível pelo console até a Fase 3 trazer o editor.
+// Editor, monitor serial e simulador
+const serial = createSerialMonitor($('serial-panel'));
+const editor = createEditor($('editor'), { doc: DEFAULT_CODE });
+let toolbar;
 const runner = new SketchRunner({
   bus,
-  onSerial: (s) => console.log('[serial]', s.trimEnd()),
-  onError: (e) => console.error('[erro]', e),
-  onClear: () => console.clear(),
+  onSerial: (s) => serial.write(s),
+  onError: (e) => serial.error(e),
+  onClear: () => serial.clear(),
+  onStatus: (s) => toolbar.setStatus(s),
 });
-window.__run = (src) => runner.run(src);
-window.__stop = () => runner.stop();
-window.__speed = (x) => { runner.speed = x; };
-const dbg = document.getElementById('debug-led');
-dbg.addEventListener('click', () => {
-  const on = !bus.state(13).value;
-  bus.write(13, { value: on ? 1 : 0, pwm: null });
-  dbg.setAttribute('aria-pressed', String(on));
+toolbar = createToolbar($('toolbar'), {
+  onRun: () => runner.run(editor.getValue()),
+  onStop: () => runner.stop(),
+  onRestart: () => runner.restart(editor.getValue()),
+  onSpeed: (x) => { runner.speed = x; },
 });
-document.getElementById('loading').classList.add('hidden');
-scene.executeWhenReady(() => document.getElementById('loading').classList.add('hidden'));
+toolbar.setStatus('idle');
+
+window.__bus = bus;
+scene.executeWhenReady(() => $('loading').classList.add('hidden'));

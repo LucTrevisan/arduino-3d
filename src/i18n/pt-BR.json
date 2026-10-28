@@ -1,4 +1,27 @@
 {
+  "ui": {
+    "titulo": "Arduino 3D — SENAI XR Lab",
+    "cena": "Cena 3D da placa Arduino Uno",
+    "carregando": "Carregando cena 3D…",
+    "editor": "Código",
+    "executar": "Executar",
+    "executarAria": "Executar o programa",
+    "parar": "Parar",
+    "pararAria": "Parar o programa",
+    "reiniciar": "Reiniciar",
+    "reiniciarAria": "Reiniciar o programa do início",
+    "velocidade": "Velocidade",
+    "velocidadeAria": "Velocidade da simulação",
+    "monitorSerial": "Monitor serial",
+    "limpar": "Limpar",
+    "limparMonitor": "Limpar o monitor serial",
+    "status": {
+      "idle": "Pronto",
+      "running": "Executando…",
+      "stopped": "Parado",
+      "error": "Erro no programa"
+    }
+  },
   "erros": {
     "pontoVirgula": "Faltou um ponto e vírgula (;) no fim da linha {line}.",
     "sobrando": "Tem um \"{ch}\" sobrando na linha {line}: não existe nenhum aberto para ele fechar.",

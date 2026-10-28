@@ -7,9 +7,22 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <div id="loading" role="status">Carregando cena 3D…</div>
-    <canvas id="scene" aria-label="Cena 3D da placa Arduino Uno" tabindex="0"></canvas>
-    <button id="debug-led" aria-label="Alternar LED do pino 13 (depuração)" aria-pressed="false">LED 13 (teste)</button>
+    <div id="loading" role="status"></div>
+    <div id="app">
+      <main id="stage">
+        <canvas id="scene" tabindex="0"></canvas>
+      </main>
+      <section id="bottom">
+        <div id="code-panel" class="panel">
+          <div class="panel-head">
+            <h2 id="code-title"></h2>
+            <div id="toolbar" class="toolbar"></div>
+          </div>
+          <div id="editor" class="editor"></div>
+        </div>
+        <div id="serial-panel" class="panel"></div>
+      </section>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
