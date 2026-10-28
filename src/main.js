@@ -9,6 +9,7 @@ import { createEditor } from './editor/editor.js';
 import { createSerialMonitor } from './ui/serialMonitor.js';
 import { createToolbar } from './ui/toolbar.js';
 import { createLessonMenu } from './ui/lessonMenu.js';
+import { createInputsPanel } from './ui/inputsPanel.js';
 import { createLessonPanel } from './ui/lessonPanel.js';
 import { lessons, getLesson } from './lessons/index.js';
 import { t } from './i18n/index.js';
@@ -46,6 +47,7 @@ toolbar = createToolbar($('toolbar'), {
 toolbar.setStatus('idle');
 
 const panel = createLessonPanel($('side'), { onUseExample: (code) => editor.setValue(code) });
+const inputsPanel = createInputsPanel($('inputs'));
 let lessonScene = null;
 
 function openLesson(id) {
@@ -56,6 +58,7 @@ function openLesson(id) {
   lessonScene?.dispose();
   bus.reset();
   lessonScene = buildLessonScene(scene, bus, lesson);
+  inputsPanel.render(lessonScene.inputs, bus, lesson.componentes.some((c) => c.tipo === 'buzzer'));
   editor.setValue(lesson.codigoInicial);
   panel.render(lesson);
   menu.setCurrent(lesson.id);

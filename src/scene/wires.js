@@ -12,6 +12,7 @@ export const WIRE_COLORS = {
   laranja: '#e8741f',
   branco: '#e4e6ea',
   roxo: '#7b4bb8',
+  marrom: '#7a4a21',
 };
 
 /** Fio em arco entre dois pontos (espaço do mundo). */

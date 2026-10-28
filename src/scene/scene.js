@@ -38,6 +38,7 @@ export function createScene(canvas) {
   table.isPickable = false;
 
   const camera = createCamera(scene, canvas);
+  scene.metadata = { camera, canvas };
   engine.runRenderLoop(() => scene.render());
   window.addEventListener('resize', () => engine.resize());
 

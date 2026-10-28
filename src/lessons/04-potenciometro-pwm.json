@@ -1,0 +1,33 @@
+{
+  "id": "04-potenciometro-pwm",
+  "nivel": "Intermediário",
+  "titulo": "Potenciômetro e PWM",
+  "resumo": "Nem tudo é liga e desliga. O potenciômetro entrega valores de 0 a 1023, e o PWM permite controlar o brilho do LED em 256 níveis. Gire o botão azul e veja o brilho acompanhar.",
+  "objetivos": [
+    "Ler uma entrada analógica com analogRead().",
+    "Converter faixas de valores com map().",
+    "Controlar o brilho do LED com analogWrite() (PWM).",
+    "Acompanhar os valores no monitor serial."
+  ],
+  "componentes": [
+    { "tipo": "pot", "id": "pot1", "pino": "A0", "posicao": [-2.4, 0.6] },
+    { "tipo": "resistor", "id": "r1", "valor": "330", "posicao": [0.8, 0.6] },
+    { "tipo": "led", "id": "led1", "pino": 9, "cor": "azul", "posicao": [2.6, 0.6] }
+  ],
+  "ligacoes": [
+    { "de": "5V", "para": "pot1.vcc", "cor": "vermelho" },
+    { "de": "A0", "para": "pot1.sinal", "cor": "laranja" },
+    { "de": "GND", "para": "pot1.gnd", "cor": "preto" },
+    { "de": "D9", "para": "r1.a", "cor": "amarelo" },
+    { "de": "r1.b", "para": "led1.anodo", "cor": "verde" },
+    { "de": "led1.catodo", "para": "GND", "cor": "preto" }
+  ],
+  "codigoInicial": "// Potenciômetro controla o brilho do LED (PWM no pino 9)\nconst int pot = A0;\nconst int led = 9;\n\nvoid setup() {\n  pinMode(led, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int leitura = analogRead(pot);               // 0 a 1023\n  int brilho = map(leitura, 0, 1023, 0, 255);  // 0 a 255\n  analogWrite(led, brilho);\n  Serial.print(\"leitura: \");\n  Serial.print(leitura);\n  Serial.print(\"  brilho: \");\n  Serial.println(brilho);\n  delay(100);\n}\n",
+  "exemplo": "// Mostra também a tensão em volts no potenciômetro\nconst int pot = A0;\nconst int led = 9;\n\nvoid setup() {\n  pinMode(led, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int leitura = analogRead(pot);\n  float volts = leitura * 5.0 / 1023.0;\n  analogWrite(led, map(leitura, 0, 1023, 0, 255));\n  Serial.print(volts);\n  Serial.println(\" V\");\n  delay(200);\n}\n",
+  "desafio": {
+    "enunciado": "Gire o potenciômetro do mínimo ao máximo e faça o LED variar o brilho de apagado (0) até o máximo (255), passando por vários níveis intermediários.",
+    "verificacao": "pwm_varia"
+  },
+  "pinagem": "O potenciômetro tem 3 terminais: um no 5 V, outro no GND e o do meio (cursor) no pino analógico A0. Girar o botão muda a tensão do cursor de 0 V a 5 V.\nO LED azul está no pino D9, que tem PWM (marcado com ~ na placa real).",
+  "especificacoes": "Potenciômetro linear de 10 kΩ.\nConversor analógico-digital de 10 bits: 0 V → 0 e 5 V → 1023. PWM de 8 bits: valores de 0 a 255, a cerca de 490 Hz nos pinos 9 e 10."
+}

@@ -1,0 +1,32 @@
+{
+  "id": "03-botao-led",
+  "nivel": "Básico",
+  "titulo": "Botão e LED",
+  "resumo": "Até aqui o programa só dava ordens. Agora ele também vai ouvir: o botão envia uma informação ao Arduino, e o LED responde. Segure o botão (no 3D ou no painel Controles) e veja o LED acender.",
+  "objetivos": [
+    "Configurar um pino como entrada com INPUT_PULLUP.",
+    "Ler o botão com digitalRead().",
+    "Tomar decisões com if / else.",
+    "Entender por que o botão com pull-up lê LOW quando está apertado."
+  ],
+  "componentes": [
+    { "tipo": "button", "id": "btn1", "pino": 2, "ativoEm": "LOW", "posicao": [-2.2, 0.6] },
+    { "tipo": "resistor", "id": "r1", "valor": "330", "posicao": [0.8, 0.6] },
+    { "tipo": "led", "id": "led1", "pino": 8, "cor": "verde", "posicao": [2.6, 0.6] }
+  ],
+  "ligacoes": [
+    { "de": "D2", "para": "btn1.a", "cor": "azul" },
+    { "de": "btn1.b", "para": "GND", "cor": "preto" },
+    { "de": "D8", "para": "r1.a", "cor": "amarelo" },
+    { "de": "r1.b", "para": "led1.anodo", "cor": "verde" },
+    { "de": "led1.catodo", "para": "GND", "cor": "preto" }
+  ],
+  "codigoInicial": "// Botão e LED: o LED acende enquanto o botão estiver apertado\nconst int botao = 2;\nconst int led = 8;\n\nvoid setup() {\n  pinMode(botao, INPUT_PULLUP); // resistor interno ligado ao 5 V\n  pinMode(led, OUTPUT);\n}\n\nvoid loop() {\n  if (digitalRead(botao) == LOW) { // LOW = botão apertado\n    digitalWrite(led, HIGH);\n  } else {\n    digitalWrite(led, LOW);\n  }\n}\n",
+  "exemplo": "// Botão como interruptor: cada aperto liga ou desliga o LED\nconst int botao = 2;\nconst int led = 8;\nbool ligado = false;\n\nvoid setup() {\n  pinMode(botao, INPUT_PULLUP);\n  pinMode(led, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  if (digitalRead(botao) == LOW) {\n    ligado = !ligado;\n    digitalWrite(led, ligado);\n    Serial.println(ligado ? \"LED ligado\" : \"LED desligado\");\n    delay(250); // evita contar o mesmo aperto duas vezes\n  }\n}\n",
+  "desafio": {
+    "enunciado": "Transforme o botão em interruptor: um aperto acende o LED e ele continua aceso até o próximo aperto. Aperte o botão pelo menos duas vezes para provar.",
+    "verificacao": "botao_liga_desliga"
+  },
+  "pinagem": "O botão liga o pino D2 ao GND. Com INPUT_PULLUP, o pino fica em HIGH sozinho; ao apertar, o botão o conecta ao GND e a leitura vira LOW.\nO LED está no pino D8, com resistor de 330 Ω em série, e o cátodo volta ao GND.",
+  "especificacoes": "Botão de pressão (tátil) de 4 terminais, usado com 2 deles.\nResistor de pull-up interno do ATmega328P: de 20 kΩ a 50 kΩ, ativado por software, então não é preciso resistor externo."
+}

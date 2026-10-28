@@ -35,7 +35,7 @@ export class PinBus {
     pin = pinNumber(pin);
     const s = this.state(pin);
     Object.assign(s, patch);
-    this.history.push({ t: this.clock(), pin, value: s.value, pwm: s.pwm, analog: s.analog });
+    this.history.push({ t: this.clock(), pin, value: s.value, pwm: s.pwm, analog: s.analog, tone: s.tone, servo: s.servo, distance: s.distance });
     if (this.history.length > 5000) this.history.shift();
     for (const fn of this.listeners.get(pin) ?? []) fn(s, pin);
     for (const fn of this.listeners.get('*') ?? []) fn(s, pin);

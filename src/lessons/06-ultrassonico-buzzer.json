@@ -1,0 +1,32 @@
+{
+  "id": "06-ultrassonico-buzzer",
+  "nivel": "Avançado",
+  "titulo": "Sensor ultrassônico e alarme",
+  "resumo": "O sensor HC-SR04 mede distâncias enviando um som que ninguém escuta e medindo quanto tempo o eco demora a voltar. Você vai ler essa distância e fazer o buzzer apitar quando algo chegar perto, como um sensor de ré.",
+  "objetivos": [
+    "Disparar o sensor com o pino TRIG e medir o eco com pulseIn().",
+    "Converter o tempo do eco em distância (cm).",
+    "Mostrar medidas no monitor serial.",
+    "Acionar um alarme com tone() e noTone() usando uma condição."
+  ],
+  "componentes": [
+    { "tipo": "ultrasonic", "id": "us1", "trig": 7, "eco": 6, "posicao": [-3, 0.2], "distanciaInicial": 60 },
+    { "tipo": "buzzer", "id": "buzzer1", "pino": 8, "posicao": [2.6, -0.9] }
+  ],
+  "ligacoes": [
+    { "de": "5V", "para": "us1.vcc", "cor": "vermelho" },
+    { "de": "D7", "para": "us1.trig", "cor": "laranja" },
+    { "de": "D6", "para": "us1.echo", "cor": "azul" },
+    { "de": "GND", "para": "us1.gnd", "cor": "preto" },
+    { "de": "D8", "para": "buzzer1.positivo", "cor": "amarelo" },
+    { "de": "buzzer1.negativo", "para": "GND", "cor": "preto" }
+  ],
+  "codigoInicial": "// Sensor de aproximação: buzzer toca quando algo está a menos de 20 cm\nconst int trig = 7;\nconst int echo = 6;\nconst int buzzer = 8;\n\nvoid setup() {\n  pinMode(trig, OUTPUT);\n  pinMode(echo, INPUT);\n  pinMode(buzzer, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  // pulso de 10 microssegundos no TRIG\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n\n  long duracao = pulseIn(echo, HIGH);       // tempo do eco em microssegundos\n  float distancia = duracao * 0.0343 / 2;   // ida e volta, por isso divide por 2\n\n  Serial.print(\"Distancia: \");\n  Serial.print(distancia);\n  Serial.println(\" cm\");\n\n  if (distancia > 0 && distancia < 20) {\n    tone(buzzer, 1000);\n  } else {\n    noTone(buzzer);\n  }\n  delay(100);\n}\n",
+  "exemplo": "// Alarme em dois níveis: quanto mais perto, mais rápido o bipe\nconst int trig = 7;\nconst int echo = 6;\nconst int buzzer = 8;\n\nvoid setup() {\n  pinMode(trig, OUTPUT);\n  pinMode(echo, INPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n\n  float distancia = pulseIn(echo, HIGH) * 0.0343 / 2;\n  Serial.println(distancia);\n\n  if (distancia > 0 && distancia < 10) {\n    tone(buzzer, 2000, 100);\n    delay(150);\n  } else if (distancia > 0 && distancia < 30) {\n    tone(buzzer, 1000, 100);\n    delay(400);\n  } else {\n    delay(100);\n  }\n}\n",
+  "desafio": {
+    "enunciado": "Ajuste o programa para o alarme tocar somente quando o objeto estiver a menos de 15 cm. Arraste o objeto laranja (ou use o controle de distância) para testar perto e longe.",
+    "verificacao": "buzzer_alerta_distancia"
+  },
+  "pinagem": "O HC-SR04 tem 4 pinos: VCC no 5 V, TRIG no D7, ECHO no D6 e GND no GND.\nO programa manda um pulso curto no TRIG; o sensor emite o som e coloca o pino ECHO em HIGH durante o tempo da ida e volta. O buzzer fica no D8 (+) e no GND (−).",
+  "especificacoes": "HC-SR04: alcance de 2 cm a 400 cm, ultrassom de 40 kHz, alimentação de 5 V.\nVelocidade do som ≈ 343 m/s = 0,0343 cm/µs; distância = tempo × 0,0343 ÷ 2.\nBuzzer piezo: toca a frequência pedida em tone() (aqui 1000 Hz)."
+}

@@ -24,6 +24,16 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
 #main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: 8px; padding: 8px 8px 0; min-height: 0; }
 #stage { position: relative; min-height: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
 #side { overflow: hidden; }
+.inputs { position: absolute; left: 10px; bottom: 10px; max-width: min(360px, calc(100% - 20px)); padding: 8px 12px; background: rgba(255,255,255,.94); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; }
+.inputs h2 { margin: 0 0 4px; font-size: 13px; color: var(--senai-blue-dark); }
+.inputs[hidden] { display: none; }
+.input-row { margin: 6px 0; }
+.input-row label { display: block; }
+.input-row input[type='range'] { width: 100%; }
+.input-row output { font-weight: 700; }
+.btn.hold[aria-pressed='true'] { background: var(--senai-blue); color: #fff; }
+.sound-toggle { display: block; margin-top: 6px; }
+input:focus-visible { outline: 3px solid #ffb400; outline-offset: 2px; }
 .tablist { display: flex; border-bottom: 1px solid var(--border); background: #eef2f7; }
 .tab { flex: 1; padding: 10px 6px; border: 0; border-bottom: 3px solid transparent; background: none; font: inherit; font-weight: 600; color: var(--muted); cursor: pointer; }
 .tab[aria-selected='true'] { color: var(--senai-blue-dark); border-bottom-color: var(--senai-blue); background: #fff; }

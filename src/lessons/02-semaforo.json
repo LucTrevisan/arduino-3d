@@ -1,0 +1,39 @@
+{
+  "id": "02-semaforo",
+  "nivel": "Básico",
+  "titulo": "Semáforo",
+  "resumo": "Agora são três LEDs, cada um com seu pino. Você vai programar uma sequência de tempos como a de um semáforo de verdade: vermelho, verde e amarelo, repetindo para sempre.",
+  "objetivos": [
+    "Controlar vários pinos de saída no mesmo programa.",
+    "Dar nomes aos pinos com const int para o código ficar legível.",
+    "Montar uma sequência com digitalWrite() e delay().",
+    "Perceber que o programa executa uma linha de cada vez, de cima para baixo."
+  ],
+  "componentes": [
+    { "tipo": "resistor", "id": "r1", "valor": "330", "posicao": [-3.5, 0.6] },
+    { "tipo": "led", "id": "led1", "pino": 8, "cor": "vermelho", "posicao": [-1.9, 0.6] },
+    { "tipo": "resistor", "id": "r2", "valor": "330", "posicao": [-0.8, 0.6] },
+    { "tipo": "led", "id": "led2", "pino": 9, "cor": "amarelo", "posicao": [0.8, 0.6] },
+    { "tipo": "resistor", "id": "r3", "valor": "330", "posicao": [1.9, 0.6] },
+    { "tipo": "led", "id": "led3", "pino": 10, "cor": "verde", "posicao": [3.5, 0.6] }
+  ],
+  "ligacoes": [
+    { "de": "D8", "para": "r1.a", "cor": "laranja" },
+    { "de": "r1.b", "para": "led1.anodo", "cor": "verde" },
+    { "de": "led1.catodo", "para": "GND", "cor": "preto" },
+    { "de": "D9", "para": "r2.a", "cor": "azul" },
+    { "de": "r2.b", "para": "led2.anodo", "cor": "verde" },
+    { "de": "led2.catodo", "para": "GND", "cor": "preto" },
+    { "de": "D10", "para": "r3.a", "cor": "roxo" },
+    { "de": "r3.b", "para": "led3.anodo", "cor": "verde" },
+    { "de": "led3.catodo", "para": "GND", "cor": "preto" }
+  ],
+  "codigoInicial": "// Semáforo: vermelho, verde e amarelo em sequência\nconst int vermelho = 8;\nconst int amarelo = 9;\nconst int verde = 10;\n\nvoid setup() {\n  pinMode(vermelho, OUTPUT);\n  pinMode(amarelo, OUTPUT);\n  pinMode(verde, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(vermelho, HIGH);\n  delay(3000);\n  digitalWrite(vermelho, LOW);\n\n  digitalWrite(verde, HIGH);\n  delay(3000);\n  digitalWrite(verde, LOW);\n\n  digitalWrite(amarelo, HIGH);\n  delay(1000);\n  digitalWrite(amarelo, LOW);\n}\n",
+  "exemplo": "// Mesma ideia, mas com uma função própria para não repetir código\nconst int vermelho = 8;\nconst int amarelo = 9;\nconst int verde = 10;\n\nvoid acender(int pino, int tempo) {\n  digitalWrite(pino, HIGH);\n  delay(tempo);\n  digitalWrite(pino, LOW);\n}\n\nvoid setup() {\n  pinMode(vermelho, OUTPUT);\n  pinMode(amarelo, OUTPUT);\n  pinMode(verde, OUTPUT);\n}\n\nvoid loop() {\n  acender(vermelho, 3000);\n  acender(verde, 3000);\n  acender(amarelo, 1000);\n}\n",
+  "desafio": {
+    "enunciado": "Faça o semáforo seguir a ordem vermelho → verde → amarelo, com o amarelo aceso por 1 segundo, e repita a sequência pelo menos duas vezes.",
+    "verificacao": "semaforo_sequencia"
+  },
+  "pinagem": "Cada LED usa um pino digital próprio: vermelho no D8, amarelo no D9 e verde no D10.\nOs três cátodos (−) voltam ao GND da placa. Cada LED tem o seu resistor de 330 Ω em série, que limita a corrente.",
+  "especificacoes": "3 LEDs de 5 mm (vermelho, amarelo, verde) e 3 resistores de 330 Ω.\nCorrente por LED ≈ 9 mA; apenas um LED fica aceso por vez, então a placa nunca passa do limite de 40 mA por pino."
+}
