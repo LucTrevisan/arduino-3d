@@ -31,7 +31,7 @@
   "codigoInicial": "// Semáforo: vermelho, verde e amarelo em sequência\nconst int vermelho = 8;\nconst int amarelo = 9;\nconst int verde = 10;\n\nvoid setup() {\n  pinMode(vermelho, OUTPUT);\n  pinMode(amarelo, OUTPUT);\n  pinMode(verde, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(vermelho, HIGH);\n  delay(3000);\n  digitalWrite(vermelho, LOW);\n\n  digitalWrite(verde, HIGH);\n  delay(3000);\n  digitalWrite(verde, LOW);\n\n  digitalWrite(amarelo, HIGH);\n  delay(1000);\n  digitalWrite(amarelo, LOW);\n}\n",
   "exemplo": "// Mesma ideia, mas com uma função própria para não repetir código\nconst int vermelho = 8;\nconst int amarelo = 9;\nconst int verde = 10;\n\nvoid acender(int pino, int tempo) {\n  digitalWrite(pino, HIGH);\n  delay(tempo);\n  digitalWrite(pino, LOW);\n}\n\nvoid setup() {\n  pinMode(vermelho, OUTPUT);\n  pinMode(amarelo, OUTPUT);\n  pinMode(verde, OUTPUT);\n}\n\nvoid loop() {\n  acender(vermelho, 3000);\n  acender(verde, 3000);\n  acender(amarelo, 1000);\n}\n",
   "desafio": {
-    "enunciado": "Faça o semáforo seguir a ordem vermelho → verde → amarelo, com o amarelo aceso por 1 segundo, e repita a sequência pelo menos duas vezes.",
+    "enunciado": "Monte a sequência de um semáforo real: verde → amarelo → vermelho, com o amarelo aceso por 2 segundos. Repita a sequência pelo menos duas vezes.",
     "verificacao": "semaforo_sequencia"
   },
   "pinagem": "Cada LED usa um pino digital próprio: vermelho no D8, amarelo no D9 e verde no D10.\nOs três cátodos (−) voltam ao GND da placa. Cada LED tem o seu resistor de 330 Ω em série, que limita a corrente.",

@@ -35,10 +35,19 @@ export class PinBus {
     pin = pinNumber(pin);
     const s = this.state(pin);
     Object.assign(s, patch);
-    this.history.push({ t: this.clock(), pin, value: s.value, pwm: s.pwm, analog: s.analog, tone: s.tone, servo: s.servo, distance: s.distance });
-    if (this.history.length > 5000) this.history.shift();
+    this._record(pin, s);
     for (const fn of this.listeners.get(pin) ?? []) fn(s, pin);
     for (const fn of this.listeners.get('*') ?? []) fn(s, pin);
+  }
+
+  _record(pin, s) {
+    this.history.push({ t: this.clock(), pin, value: s.value, pwm: s.pwm, analog: s.analog, tone: s.tone, servo: s.servo, distance: s.distance });
+    if (this.history.length > 20000) this.history.shift();
+  }
+
+  /** Registra no histórico o estado atual das entradas externas (botão, pot, sensor). */
+  snapshot() {
+    for (const [pin, s] of this.pins) if (s.ext) this._record(pin, s);
   }
 
   read(pin) {

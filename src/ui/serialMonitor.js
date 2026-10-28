@@ -37,6 +37,14 @@ export function createSerialMonitor(root) {
       out.append(span);
       out.scrollTop = out.scrollHeight;
     },
+    success(message) {
+      if (pending) flush();
+      const span = document.createElement('span');
+      span.className = 'serial-success';
+      span.textContent = `${message}\n`;
+      out.append(span);
+      out.scrollTop = out.scrollHeight;
+    },
     clear() {
       pending = '';
       out.textContent = '';

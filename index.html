@@ -8,18 +8,21 @@
   </head>
   <body>
     <div id="loading" role="status"></div>
-    <div id="app">
+    <a class="skip" id="skip" href="#scene"></a>
+    <div id="app" data-mtab="lesson">
       <header id="topbar">
         <h1 id="app-title"></h1>
         <div id="lesson-menu" class="lesson-menu"></div>
       </header>
       <div id="main">
         <main id="stage">
-          <canvas id="scene" tabindex="0"></canvas>
+          <canvas id="scene" tabindex="0" aria-describedby="scene-help"></canvas>
+          <p id="scene-help" class="sr-only"></p>
           <div id="inputs" class="inputs" hidden></div>
         </main>
         <aside id="side" class="panel"></aside>
       </div>
+      <div id="mobile-tabs" class="tablist" role="tablist"></div>
       <section id="bottom">
         <div id="code-panel" class="panel">
           <div class="panel-head">

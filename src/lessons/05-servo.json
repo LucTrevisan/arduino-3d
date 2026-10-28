@@ -20,7 +20,7 @@
   "codigoInicial": "#include <Servo.h>\n\nServo meuServo;\n\nvoid setup() {\n  meuServo.attach(9); // fio de sinal no pino 9\n}\n\nvoid loop() {\n  // vai de 0° até 180°\n  for (int angulo = 0; angulo <= 180; angulo += 2) {\n    meuServo.write(angulo);\n    delay(15);\n  }\n  // volta de 180° até 0°\n  for (int angulo = 180; angulo >= 0; angulo -= 2) {\n    meuServo.write(angulo);\n    delay(15);\n  }\n}\n",
   "exemplo": "#include <Servo.h>\n\nServo meuServo;\n\nvoid setup() {\n  meuServo.attach(9);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  meuServo.write(0);\n  Serial.println(\"0 graus\");\n  delay(1000);\n  meuServo.write(90);\n  Serial.println(\"90 graus\");\n  delay(1000);\n  meuServo.write(180);\n  Serial.println(\"180 graus\");\n  delay(1000);\n}\n",
   "desafio": {
-    "enunciado": "Faça o braço do servo ir até 0°, depois até 180° e voltar a 0°. Diminua o delay() para o movimento ficar mais rápido.",
+    "enunciado": "Deixe o movimento mais lento: o braço deve levar pelo menos 2 segundos para ir de 0° até 180° e depois voltar a 0°. Dica: aumente o delay() dentro do laço.",
     "verificacao": "servo_0_180"
   },
   "pinagem": "O servo tem três fios: laranja (sinal) no pino D9, vermelho no 5 V e marrom no GND.\nO pino de sinal recebe pulsos de 1 a 2 milissegundos, e a biblioteca Servo cuida disso para você.",

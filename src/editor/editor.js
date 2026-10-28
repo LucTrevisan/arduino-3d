@@ -1,6 +1,7 @@
 import { EditorView, basicSetup } from 'codemirror';
 import { EditorState } from '@codemirror/state';
 import { cpp } from '@codemirror/lang-cpp';
+import { t } from '../i18n/index.js';
 
 const theme = EditorView.theme({
   '&': { height: '100%', fontSize: '14px', backgroundColor: '#ffffff' },
@@ -19,7 +20,7 @@ export function createEditor(parent, { doc = '', onChange } = {}) {
         basicSetup,
         cpp(),
         theme,
-        EditorView.contentAttributes.of({ 'aria-label': 'Editor de código Arduino' }),
+        EditorView.contentAttributes.of({ 'aria-label': t('ui.editorAria') }),
         EditorView.updateListener.of((u) => { if (u.docChanged) onChange?.(u.state.doc.toString()); }),
       ],
     }),

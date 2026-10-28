@@ -3,7 +3,7 @@ import { lessons } from '../lessons/index.js';
 import { progress } from './progress.js';
 
 /** Menu de lições com contador de progresso ("2/6"). */
-export function createLessonMenu(root, { onSelect }) {
+export function createLessonMenu(root, { onSelect, onReset }) {
   root.innerHTML = `
     <button type="button" class="btn menu-btn" aria-haspopup="true" aria-expanded="false"
       aria-controls="lesson-list" aria-label="${t('ui.menuAria')}"></button>
@@ -36,6 +36,19 @@ export function createLessonMenu(root, { onSelect }) {
       li.append(b);
       return li;
     }));
+    const reset = document.createElement('li');
+    const rb = document.createElement('button');
+    rb.type = 'button';
+    rb.className = 'lesson-item lesson-reset';
+    rb.textContent = t('ui.zerarProgresso');
+    rb.addEventListener('click', () => {
+      if (!confirm(t('ui.zerarConfirmar'))) return;
+      progress.reset();
+      onReset?.();
+      render();
+    });
+    reset.append(rb);
+    list.append(reset);
   }
 
   btn.addEventListener('click', () => setOpen(list.hidden));

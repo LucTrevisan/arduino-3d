@@ -193,6 +193,7 @@ export class SketchRunner {
 
     this.time.reset();
     this.bus.clock = () => this.time.now();
+    this.bus.snapshot();
     this._setStatus('running');
 
     const known = [...names.filter((n) => !n.startsWith('__')), ...result.functions];

@@ -5,6 +5,7 @@ import { mat } from '../scene/materials.js';
 import { loadModelOrProcedural } from '../scene/modelLoader.js';
 import { makeInteractive } from '../scene/interaction.js';
 import { pinNumber } from '../sim/pinbus.js';
+import { t } from '../i18n/index.js';
 
 const SCALE = 0.04; // cm do mundo por cm "medido" (a cena é comprimida para caber)
 const FRONT = 0.9; // distância (cm do mundo) do centro do sensor até a frente
@@ -81,7 +82,7 @@ export function createUltrasonic(scene, { id = 'us', trig, eco, position, distan
     // Pinos na parte de trás do sensor (lado -x do mundo), ordem vcc, trig, echo, gnd
     anchors: Object.fromEntries(['vcc', 'trig', 'echo', 'gnd'].map((n, i) =>
       [n, [-0.1, 0, -pinXs[i]]])),
-    inputs: [{ kind: 'range', label: 'Distância do objeto (cm)', pin: echoPin, field: 'distance', min: MIN, max: MAX, step: 1, set: setDistance }],
+    inputs: [{ kind: 'range', label: t('ui.entradas.distancia'), pin: echoPin, field: 'distance', min: MIN, max: MAX, step: 1, set: setDistance }],
     attach(b) {
       bus = b;
       setDistance(distanciaInicial);

@@ -15,6 +15,10 @@ let done = load();
 export const progress = {
   isDone: (id) => done.has(id),
   count: () => done.size,
+  reset() {
+    done = new Set();
+    try { localStorage.removeItem(KEY); } catch { /* sem armazenamento */ }
+  },
   markDone(id) {
     done.add(id);
     try { localStorage.setItem(KEY, JSON.stringify([...done])); } catch { /* sem armazenamento */ }

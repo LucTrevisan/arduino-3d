@@ -4,6 +4,7 @@ import { mat } from '../scene/materials.js';
 import { loadModelOrProcedural } from '../scene/modelLoader.js';
 import { makeInteractive } from '../scene/interaction.js';
 import { pinNumber } from '../sim/pinbus.js';
+import { t } from '../i18n/index.js';
 
 const SWEEP = 2.4; // ± radianos (≈ 275° de curso)
 
@@ -49,7 +50,7 @@ export function createPot(scene, { id = 'pot', pino, position }) {
   return {
     root,
     anchors: { gnd: [-0.3, 0, -0.4], sinal: [0, 0, -0.4], vcc: [0.3, 0, -0.4] },
-    inputs: [{ kind: 'range', label: `Potenciômetro (pino A${pin - 14})`, pin, field: 'analog', min: 0, max: 1023, step: 1, set: setValue }],
+    inputs: [{ kind: 'range', label: t('ui.entradas.pot', { pino: `A${pin - 14}` }), pin, field: 'analog', min: 0, max: 1023, step: 1, set: setValue }],
     attach(b) {
       bus = b;
       b.write(pin, { analog: 512, ext: true });

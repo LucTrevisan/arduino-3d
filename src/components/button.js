@@ -4,6 +4,7 @@ import { mat } from '../scene/materials.js';
 import { loadModelOrProcedural } from '../scene/modelLoader.js';
 import { makeInteractive } from '../scene/interaction.js';
 import { pinNumber } from '../sim/pinbus.js';
+import { t } from '../i18n/index.js';
 
 /**
  * Botão de pressão. `ativoEm`: nível do pino quando pressionado ('LOW' com INPUT_PULLUP, 'HIGH' com pull-down).
@@ -50,7 +51,7 @@ export function createButton(scene, { id = 'btn', pino, ativoEm = 'LOW', positio
   return {
     root,
     anchors: { a: [-0.25, 0.05, 0], b: [0.25, 0.05, 0] },
-    inputs: [{ kind: 'hold', label: `Botão (pino ${pin})`, set: press, isOn: () => pressed }],
+    inputs: [{ kind: 'hold', label: t('ui.entradas.botao', { pino: pin }), set: press, isOn: () => pressed }],
     attach(b) {
       bus = b;
       b.write(pin, { value: 1 - active, ext: true });
