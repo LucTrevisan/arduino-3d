@@ -30,6 +30,14 @@ public/models/   .glb futuros
 tests/
 ```
 
+## Interface (resumo)
+- Desktop: barra lateral de lições | cena 3D + diretório de peças | Resumo/Pinagem/Exemplo + editor + monitor serial.
+- Celular (≤ 820 px): coluna única com abas Lição / Código / Serial / Peças.
+- `scene/parts.js` cataloga peças (placa, componentes, pinos, fios); `ui/sceneLabels.js` desenha marcadores numerados,
+  `ui/componentDirectory.js` lista/busca e `scene/locator.js` realça a peça escolhida.
+- Desafios: `lessons/checks.js` (só lê `bus.history`); novo desafio = nova função + teste em `tests/checks.test.js`.
+- Depuração no console: `window.__bus` (PinBus) e `window.__editor`.
+
 ## Convenções
 - Textos de UI em PT-BR via i18n (`t('chave')`); nada de string fixa na UI.
 - Assets sempre via `import.meta.env.BASE_URL`.

@@ -160,7 +160,7 @@ const fsBtn = document.createElement('button');
 fsBtn.type = 'button';
 fsBtn.className = 'cam-btn';
 const nativeFs = !!stageEl.requestFullscreen;
-const isFull = () => (nativeFs ? document.fullscreenElement === stageEl : stageEl.classList.contains('stage-full'));
+const isFull = () => document.fullscreenElement === stageEl || stageEl.classList.contains('stage-full');
 function syncFullscreen() {
   const on = isFull();
   fsBtn.textContent = on ? t('cena.sairTelaCheia') : t('cena.telaCheia');
@@ -169,11 +169,14 @@ function syncFullscreen() {
   engine.resize();
 }
 function toggleFullscreen() {
-  if (nativeFs) {
-    if (isFull()) document.exitFullscreen();
-    else stageEl.requestFullscreen().catch(() => { stageEl.classList.add('stage-full'); syncFullscreen(); });
+  if (isFull()) {
+    stageEl.classList.remove('stage-full');
+    if (document.fullscreenElement) document.exitFullscreen();
+    syncFullscreen();
+  } else if (nativeFs) {
+    stageEl.requestFullscreen().catch(() => { stageEl.classList.add('stage-full'); syncFullscreen(); });
   } else {
-    stageEl.classList.toggle('stage-full');
+    stageEl.classList.add('stage-full');
     syncFullscreen();
   }
 }
@@ -241,5 +244,6 @@ const menus = [
 ];
 openLesson(location.hash.slice(1) || lessons[0].id);
 
-window.__bus = bus;
+window.__bus = bus; // depuração pelo console
+window.__editor = editor;
 scene.executeWhenReady(() => $('loading').classList.add('hidden'));
