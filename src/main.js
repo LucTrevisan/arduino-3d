@@ -5,6 +5,7 @@ import { createBoard, pinPositions } from './scene/board.js';
 import { createWire } from './scene/wires.js';
 import { createLed } from './components/led.js';
 import { PinBus } from './sim/pinbus.js';
+import { SketchRunner } from './sim/runtime.js';
 
 const canvas = document.getElementById('scene');
 const { scene } = createScene(canvas);
@@ -21,6 +22,16 @@ createWire(scene, pinPositions.GND, at('catodo'), 'preto');
 
 // Depuração temporária da Fase 1 (substituída pelo simulador na Fase 2).
 window.__bus = bus;
+// Simulador: acessível pelo console até a Fase 3 trazer o editor.
+const runner = new SketchRunner({
+  bus,
+  onSerial: (s) => console.log('[serial]', s.trimEnd()),
+  onError: (e) => console.error('[erro]', e),
+  onClear: () => console.clear(),
+});
+window.__run = (src) => runner.run(src);
+window.__stop = () => runner.stop();
+window.__speed = (x) => { runner.speed = x; };
 const dbg = document.getElementById('debug-led');
 dbg.addEventListener('click', () => {
   const on = !bus.state(13).value;

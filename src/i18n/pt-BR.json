@@ -1,0 +1,20 @@
+{
+  "erros": {
+    "pontoVirgula": "Faltou um ponto e vírgula (;) no fim da linha {line}.",
+    "sobrando": "Tem um \"{ch}\" sobrando na linha {line}: não existe nenhum aberto para ele fechar.",
+    "naoCombina": "O \"{open}\" aberto na linha {openLine} não combina com o \"{close}\" da linha {line}.",
+    "naoFechado": "O \"{ch}\" aberto na linha {line} nunca foi fechado.",
+    "aspas": "Faltou fechar as aspas na linha {line}.",
+    "semSetupLoop": "Todo programa Arduino precisa ter as funções void setup() e void loop().",
+    "sintaxe": "Há um erro de escrita no código: {msg}",
+    "naoDefinido": "Não encontrei \"{nome}\". Confira se escreveu certo (maiúsculas e minúsculas importam) e se declarou antes de usar.",
+    "sugestao": " Você quis dizer \"{sugestao}\"?",
+    "naoFuncao": "\"{nome}\" não é uma função. Confira o nome e os parênteses.",
+    "constante": "Você tentou mudar o valor de uma constante (const ou #define).",
+    "recursao": "Uma função está chamando a si mesma sem parar (recursão infinita).",
+    "inexistente": "Você tentou usar algo que ainda não existe ({msg}).",
+    "geral": "Erro durante a execução: {msg}",
+    "linha": " (linha {line})",
+    "prefixo": "Erro: "
+  }
+}
