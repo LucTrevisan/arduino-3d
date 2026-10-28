@@ -1,51 +1,34 @@
 import './style.css';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { createScene } from './scene/scene.js';
-import { createBoard, pinPositions } from './scene/board.js';
-import { createWire } from './scene/wires.js';
-import { createLed } from './components/led.js';
+import { createBoard } from './scene/board.js';
+import { buildLessonScene } from './scene/lessonScene.js';
 import { PinBus } from './sim/pinbus.js';
 import { SketchRunner } from './sim/runtime.js';
 import { createEditor } from './editor/editor.js';
 import { createSerialMonitor } from './ui/serialMonitor.js';
 import { createToolbar } from './ui/toolbar.js';
+import { createLessonMenu } from './ui/lessonMenu.js';
+import { createLessonPanel } from './ui/lessonPanel.js';
+import { lessons, getLesson } from './lessons/index.js';
 import { t } from './i18n/index.js';
 
 const $ = (id) => document.getElementById(id);
 $('loading').textContent = t('ui.carregando');
 $('scene').setAttribute('aria-label', t('ui.cena'));
 $('code-title').textContent = t('ui.editor');
+$('app-title').textContent = t('ui.titulo');
 
-const DEFAULT_CODE = `// Pisca LED: acende e apaga o LED do pino 13
-void setup() {
-  pinMode(13, OUTPUT);
-}
-
-void loop() {
-  digitalWrite(13, HIGH);
-  delay(1000);
-  digitalWrite(13, LOW);
-  delay(1000);
-}
-`;
-
-const canvas = $('scene');
-const { engine, scene } = createScene(canvas);
+const { engine, scene, camera } = createScene($('scene'));
 new ResizeObserver(() => engine.resize()).observe($('stage'));
-const bus = new PinBus();
+camera.target = new Vector3(0, 0, 3.5);
+camera.radius = 15;
 
+const bus = new PinBus();
 createBoard(scene);
 
-// LED no pino 13, ao lado da placa, ligado por fios (D13 → anodo, GND → catodo).
-const led = createLed(scene, { id: 'led1', pino: 13, cor: 'vermelho', position: new Vector3(-0.2, 0.7, 4.3) });
-led.attach(bus);
-const at = (name) => led.root.position.add(new Vector3(...led.anchors[name]));
-createWire(scene, pinPositions.D13, at('anodo'), 'amarelo');
-createWire(scene, pinPositions.GND, at('catodo'), 'preto');
-
-// Editor, monitor serial e simulador
 const serial = createSerialMonitor($('serial-panel'));
-const editor = createEditor($('editor'), { doc: DEFAULT_CODE });
+const editor = createEditor($('editor'), { doc: '' });
 let toolbar;
 const runner = new SketchRunner({
   bus,
@@ -61,6 +44,26 @@ toolbar = createToolbar($('toolbar'), {
   onSpeed: (x) => { runner.speed = x; },
 });
 toolbar.setStatus('idle');
+
+const panel = createLessonPanel($('side'), { onUseExample: (code) => editor.setValue(code) });
+let lessonScene = null;
+
+function openLesson(id) {
+  const lesson = getLesson(id);
+  runner.stop(true);
+  serial.clear();
+  toolbar.setStatus('idle');
+  lessonScene?.dispose();
+  bus.reset();
+  lessonScene = buildLessonScene(scene, bus, lesson);
+  editor.setValue(lesson.codigoInicial);
+  panel.render(lesson);
+  menu.setCurrent(lesson.id);
+  history.replaceState(null, '', `#${lesson.id}`);
+}
+
+const menu = createLessonMenu($('lesson-menu'), { onSelect: openLesson });
+openLesson(location.hash.slice(1) || lessons[0].id);
 
 window.__bus = bus;
 scene.executeWhenReady(() => $('loading').classList.add('hidden'));

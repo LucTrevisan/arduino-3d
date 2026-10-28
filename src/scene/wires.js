@@ -15,7 +15,7 @@ export const WIRE_COLORS = {
 };
 
 /** Fio em arco entre dois pontos (espaço do mundo). */
-export function createWire(scene, from, to, cor = 'amarelo', lift = 1.2) {
+export function createWire(scene, from, to, cor = 'amarelo', lift = 0.3) {
   const mid = Vector3.Center(from, to);
   mid.y += lift + Vector3.Distance(from, to) * 0.15;
   const path = Curve3.CreateQuadraticBezier(from, mid, to, 24).getPoints();

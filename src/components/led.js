@@ -5,6 +5,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { mat } from '../scene/materials.js';
 import { loadModelOrProcedural } from '../scene/modelLoader.js';
 
+const LEG = 0.85;
 const COLORS = {
   vermelho: '#ff2a1f',
   verde: '#22d44a',
@@ -45,11 +46,13 @@ export function createLed(scene, { id = 'led', pino, cor = 'vermelho', position 
   for (const [name, x, h] of [['anodo', -0.127, 0.9], ['catodo', 0.127, 0.7]]) {
     const leg = MeshBuilder.CreateBox(`${id}-${name}`, { width: 0.04, height: h, depth: 0.04 }, scene);
     leg.parent = root;
-    leg.position.set(x, -h / 2 + 0.03, 0);
+    leg.position.set(x, -LEG + h / 2, 0);
     leg.material = metal;
   }
 
-  const anchors = { anodo: [-0.127, -0.85, 0], catodo: [0.127, -0.65, 0] };
+  // `position` é o ponto da superfície onde as pernas encostam.
+  root.position.y += LEG;
+  const anchors = { anodo: [-0.127, -LEG, 0], catodo: [0.127, -LEG, 0] };
 
   function setLevel(n) {
     const v = Math.max(0, Math.min(1, n));

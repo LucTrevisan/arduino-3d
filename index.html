@@ -9,9 +9,16 @@
   <body>
     <div id="loading" role="status"></div>
     <div id="app">
-      <main id="stage">
-        <canvas id="scene" tabindex="0"></canvas>
-      </main>
+      <header id="topbar">
+        <h1 id="app-title"></h1>
+        <div id="lesson-menu" class="lesson-menu"></div>
+      </header>
+      <div id="main">
+        <main id="stage">
+          <canvas id="scene" tabindex="0"></canvas>
+        </main>
+        <aside id="side" class="panel"></aside>
+      </div>
       <section id="bottom">
         <div id="code-panel" class="panel">
           <div class="panel-head">

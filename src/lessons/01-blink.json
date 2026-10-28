@@ -1,0 +1,29 @@
+{
+  "id": "01-blink",
+  "nivel": "Básico",
+  "titulo": "Pisca LED",
+  "resumo": "Todo projeto de eletrônica começa acendendo um LED. Nesta lição você vai ligar um LED ao pino digital 13 e escrever o programa que faz ele acender e apagar sozinho, uma vez por segundo.",
+  "objetivos": [
+    "Entender a estrutura de um programa Arduino: setup() roda uma vez e loop() roda para sempre.",
+    "Configurar um pino como saída com pinMode().",
+    "Ligar e desligar o pino com digitalWrite() e esperar com delay().",
+    "Saber por que o LED precisa de um resistor em série."
+  ],
+  "componentes": [
+    { "tipo": "resistor", "id": "r1", "valor": "330", "posicao": [-1.3, 0.6] },
+    { "tipo": "led", "id": "led1", "pino": 13, "cor": "vermelho", "posicao": [1.1, 0.6] }
+  ],
+  "ligacoes": [
+    { "de": "D13", "para": "r1.a", "cor": "amarelo" },
+    { "de": "r1.b", "para": "led1.anodo", "cor": "verde" },
+    { "de": "led1.catodo", "para": "GND", "cor": "preto" }
+  ],
+  "codigoInicial": "// Pisca LED: acende e apaga o LED do pino 13\nvoid setup() {\n  pinMode(13, OUTPUT);   // pino 13 como saída\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH); // acende\n  delay(1000);            // espera 1 segundo\n  digitalWrite(13, LOW);  // apaga\n  delay(1000);\n}\n",
+  "exemplo": "// Versão organizada, com constantes e mensagens no monitor serial\nconst int pinoLed = 13;\nconst int tempo = 500; // meio segundo\n\nvoid setup() {\n  pinMode(pinoLed, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(pinoLed, HIGH);\n  Serial.println(\"LED aceso\");\n  delay(tempo);\n  digitalWrite(pinoLed, LOW);\n  Serial.println(\"LED apagado\");\n  delay(tempo);\n}\n",
+  "desafio": {
+    "enunciado": "Faça o LED piscar mais rápido: acenda e apague a cada 200 milissegundos (pelo menos 5 piscadas completas).",
+    "verificacao": "pino13_alterna"
+  },
+  "pinagem": "O pino digital 13 da placa envia 5 V quando está em HIGH e 0 V quando está em LOW.\nA corrente sai do pino 13, passa pelo resistor de 330 Ω, entra no ânodo (+, perna mais longa) do LED, sai pelo cátodo (−, perna mais curta) e volta ao pino GND.",
+  "especificacoes": "LED vermelho 5 mm: tensão direta ≈ 2 V, corrente típica 10 a 20 mA.\nResistor: 330 Ω (laranja, laranja, marrom). Com 5 V, a corrente fica em torno de (5 − 2) / 330 ≈ 9 mA, segura para o LED e para o pino."
+}
