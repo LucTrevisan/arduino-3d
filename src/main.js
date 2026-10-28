@@ -26,7 +26,7 @@ camera.target = new Vector3(0, 0, 3.5);
 camera.radius = 15;
 
 const bus = new PinBus();
-createBoard(scene);
+createBoard(scene, bus);
 
 const serial = createSerialMonitor($('serial-panel'));
 const editor = createEditor($('editor'), { doc: '' });
