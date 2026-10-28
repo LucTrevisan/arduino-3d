@@ -25,6 +25,11 @@ O progresso fica salvo no navegador (`localStorage`).
 
 - **Executar / Parar / Reiniciar** e **velocidade** (0,5x, 1x, 2x) na barra do editor.
 - **Câmera**: arraste para girar, role ou use pinça para aproximar; teclado: `W A S D` movem, `Q E` giram.
+  Botões sob a cena: girar, aproximar/afastar, resetar câmera e **Tela cheia** (no modo tela cheia ficam
+  disponíveis Executar e Parar).
+- **Peças numeradas**: clique num marcador (ou use **Legendas**) para ver o nome da peça; o **Diretório de componentes**
+  lista peças, pinos e fios, com busca e filtros, e localiza a peça na cena.
+- **Traço de sinal**: mostra os últimos sinais de saída dos pinos enquanto o programa roda.
 - **Entradas**: clique e segure o botão 3D, arraste o potenciômetro ou o objeto do sensor — ou use o painel **Controles**
   (funciona com teclado e toque).
 - Erros de código aparecem no monitor serial em português, com a linha.

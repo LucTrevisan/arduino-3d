@@ -37,6 +37,7 @@
     "abaLicao": "Lição",
     "abaCodigo": "Código",
     "abaSerial": "Serial",
+    "abaPecas": "Peças",
     "abasMobileAria": "Seções da página",
     "entradas": {
       "botao": "Botão (pino {pino})",
@@ -55,6 +56,67 @@
       "stopped": "Parado",
       "error": "Erro no programa"
     }
+  },
+  "pecas": {
+    "usbc": { "nome": "Conector USB-C", "desc": "Liga a placa ao computador: alimenta e recebe o programa." },
+    "jack": { "nome": "Conector de energia", "desc": "Recebe de 7 a 12 V de uma fonte externa." },
+    "chip": { "nome": "Microcontrolador ATmega328P", "desc": "O cérebro da placa: executa o seu programa." },
+    "digital": { "nome": "Pinos digitais D0–D13", "desc": "Entradas e saídas liga/desliga. Os marcados com ~ têm PWM." },
+    "power": { "nome": "Pinos de energia", "desc": "5 V, 3,3 V, GND e VIN para alimentar o circuito." },
+    "analog": { "nome": "Entradas analógicas A0–A5", "desc": "Leem tensões de 0 a 5 V, com valores de 0 a 1023." },
+    "reset": { "nome": "Botão de reset", "desc": "Reinicia o programa desde o começo." },
+    "ledL": { "nome": "LED L (pino 13)", "desc": "LED da própria placa, ligado ao pino 13." },
+    "crystal": { "nome": "Cristal de 16 MHz", "desc": "Marca o ritmo (clock) do microcontrolador." },
+    "icsp": { "nome": "Conector ICSP", "desc": "Grava o microcontrolador diretamente, sem usar o USB." },
+    "caps": { "nome": "Capacitores eletrolíticos", "desc": "Estabilizam a tensão de alimentação." },
+    "usbserial": { "nome": "Conversor USB-serial", "desc": "Traduz a comunicação do USB para o microcontrolador." },
+    "breadboard": { "nome": "Protoboard", "desc": "Placa de furos para montar circuitos sem solda." },
+    "tipo": {
+      "led": { "nome": "LED", "desc": "Acende quando passa corrente. A perna longa é o ânodo (+)." },
+      "resistor": { "nome": "Resistor", "desc": "Limita a corrente para proteger o LED e a placa." },
+      "button": { "nome": "Botão", "desc": "Fecha o circuito enquanto está apertado." },
+      "pot": { "nome": "Potenciômetro", "desc": "Resistor variável: girar muda a tensão de 0 a 5 V." },
+      "servo": { "nome": "Servo motor", "desc": "Gira o braço até um ângulo de 0° a 180°." },
+      "ultrasonic": { "nome": "Sensor ultrassônico", "desc": "Mede distância com ultrassom, medindo o tempo do eco." },
+      "buzzer": { "nome": "Buzzer", "desc": "Faz som ao receber sinal; tone() escolhe a nota." }
+    },
+    "pino": {
+      "nome": "Pino {nome}",
+      "digital": "Entrada ou saída digital.",
+      "pwm": "Saída digital com PWM (~).",
+      "analog": "Entrada analógica (0 a 1023) ou digital.",
+      "5V": "Alimentação de 5 V.",
+      "3V3": "Alimentação de 3,3 V.",
+      "GND": "Terra (0 V).",
+      "VIN": "Entrada de tensão externa.",
+      "outro": "Pino especial."
+    },
+    "fio": { "nome": "Fio {de} → {para}", "desc": "Fio {cor}." }
+  },
+  "diretorio": {
+    "titulo": "Diretório de componentes",
+    "dica": "selecione para localizar",
+    "buscar": "Buscar peça, D13, A0, GND…",
+    "buscarAria": "Buscar peças e pinos",
+    "vazio": "Nada encontrado.",
+    "cat": { "todos": "Todos", "experimento": "Experimento", "placa": "Placa", "pinos": "Pinos", "fios": "Fios" }
+  },
+  "cena": {
+    "pronto": "Pronto para explorar",
+    "girarEsq": "Girar para a esquerda",
+    "girarDir": "Girar para a direita",
+    "aproximar": "Aproximar",
+    "afastar": "Afastar",
+    "resetar": "Resetar câmera",
+    "telaCheia": "⛶ Tela cheia",
+    "telaCheiaAria": "Abrir a cena 3D em tela cheia",
+    "sairTelaCheia": "Sair da tela cheia",
+    "sairTelaCheiaAria": "Sair do modo de tela cheia",
+    "legendas": "Legendas",
+    "legendasAria": "Mostrar ou ocultar as legendas das peças",
+    "marcador": "Peça {n}: {nome}",
+    "tracoSinal": "Traço de sinal",
+    "aguardando": "Aguardando execução"
   },
   "erros": {
     "pontoVirgula": "Faltou um ponto e vírgula (;) no fim da linha {line}.",

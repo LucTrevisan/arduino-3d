@@ -12,12 +12,13 @@ import '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import '@babylonjs/core/Meshes/Builders/planeBuilder';
 import '@babylonjs/core/Meshes/Builders/tubeBuilder';
 import { createCamera } from './camera.js';
+import { createCameraControls } from './cameraControls.js';
 import { mat } from './materials.js';
 
 export function createScene(canvas) {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false });
   const scene = new Scene(engine);
-  scene.clearColor = Color4.FromHexString('#e9eef4ff');
+  scene.clearColor = Color4.FromHexString('#dfe5ecff'); // igual ao chão: sem borda de mesa visível
 
   // Luz moderada: hemisférica suave + direcional para dar volume (evita modelos lavados).
   const hemi = new HemisphericLight('hemi', new Vector3(0, 1, -0.3), scene);
@@ -32,15 +33,17 @@ export function createScene(canvas) {
   glow.intensity = 0.8;
 
   // Mesa
-  const table = MeshBuilder.CreateBox('table', { width: 40, height: 0.4, depth: 40 }, scene);
+  const table = MeshBuilder.CreateBox('table', { width: 400, height: 0.4, depth: 400 }, scene);
   table.position.y = -0.4;
-  table.material = mat(scene, '#cfd6df', { specular: 0 });
+  table.material = mat(scene, '#dfe5ec', { specular: 0 });
   table.isPickable = false;
 
   const camera = createCamera(scene, canvas);
   scene.metadata = { camera, canvas };
+  const cameraControls = createCameraControls(scene, camera);
+  cameraControls.home();
   engine.runRenderLoop(() => scene.render());
   window.addEventListener('resize', () => engine.resize());
 
-  return { engine, scene, camera, glow };
+  return { engine, scene, camera, glow, cameraControls };
 }

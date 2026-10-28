@@ -27,7 +27,7 @@ export function createWire(scene, from, to, cor = 'amarelo', lift = 0.3) {
   const mid = Vector3.Center(a, b);
   mid.y += lift + Vector3.Distance(a, b) * 0.15;
   const path = Curve3.CreateQuadraticBezier(a, mid, b, 24).getPoints();
-  const tube = MeshBuilder.CreateTube('wire-tube', { path, radius: 0.045, tessellation: 8, cap: 3 }, scene);
+  const tube = MeshBuilder.CreateTube('wire-tube', { path, radius: 0.06, tessellation: 10, cap: 3 }, scene);
   tube.parent = root;
   tube.material = mat(scene, WIRE_COLORS[cor] ?? WIRE_COLORS.amarelo, { specular: 0.3 });
   tube.isPickable = false;

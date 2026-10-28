@@ -1,16 +1,20 @@
 import './style.css';
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { createScene } from './scene/scene.js';
-import { createBoard } from './scene/board.js';
+import { createBoard, pinPositions } from './scene/board.js';
 import { buildLessonScene } from './scene/lessonScene.js';
+import { buildParts } from './scene/parts.js';
+import { createLocator } from './scene/locator.js';
 import { PinBus } from './sim/pinbus.js';
 import { SketchRunner } from './sim/runtime.js';
 import { createEditor } from './editor/editor.js';
 import { createSerialMonitor } from './ui/serialMonitor.js';
 import { createToolbar } from './ui/toolbar.js';
 import { createLessonMenu } from './ui/lessonMenu.js';
-import { createInputsPanel } from './ui/inputsPanel.js';
 import { createLessonPanel } from './ui/lessonPanel.js';
+import { createInputsPanel } from './ui/inputsPanel.js';
+import { createComponentDirectory } from './ui/componentDirectory.js';
+import { createSceneLabels } from './ui/sceneLabels.js';
+import { createSignalTrace } from './ui/signalTrace.js';
 import { lessons, getLesson } from './lessons/index.js';
 import { runCheck } from './lessons/checks.js';
 import { progress } from './ui/progress.js';
@@ -21,21 +25,21 @@ $('loading').textContent = t('ui.carregando');
 $('scene').setAttribute('aria-label', t('ui.cena'));
 $('code-title').textContent = t('ui.editor');
 $('app-title').textContent = t('ui.titulo');
-
-const { engine, scene, camera } = createScene($('scene'));
-new ResizeObserver(() => engine.resize()).observe($('stage'));
-camera.target = new Vector3(0, 0, 3.5);
-camera.radius = 15;
-
 $('skip').textContent = t('ui.pularParaConteudo');
 $('scene-help').textContent = t('ui.ajudaCena');
+document.querySelector('.trace-title').textContent = t('cena.tracoSinal');
 
-// Abas do celular (Lição / Código / Serial). No desktop a barra fica oculta pelo CSS.
+const { engine, scene, camera, cameraControls } = createScene($('scene'));
+new ResizeObserver(() => engine.resize()).observe($('stage'));
+const locator = createLocator(scene);
+
+// ---------- Abas do celular (Lição / Código / Serial / Peças); no desktop a barra fica oculta ----------
 const mobile = window.matchMedia('(max-width: 820px)');
 const mtabs = [
   { id: 'lesson', label: t('ui.abaLicao'), controls: 'side' },
   { id: 'code', label: t('ui.abaCodigo'), controls: 'code-panel' },
   { id: 'serial', label: t('ui.abaSerial'), controls: 'serial-panel' },
+  { id: 'parts', label: t('ui.abaPecas'), controls: 'directory' },
 ];
 const mtabBar = $('mobile-tabs');
 mtabBar.setAttribute('aria-label', t('ui.abasMobileAria'));
@@ -68,27 +72,120 @@ mtabs.forEach((m, i) => {
 });
 setMobileTab('lesson');
 
+// ---------- Simulador, editor e monitor ----------
 const bus = new PinBus();
 createBoard(scene, bus);
 
 const serial = createSerialMonitor($('serial-panel'));
 const editor = createEditor($('editor'), { doc: '' });
 let toolbar;
+let trace;
+const stageStatus = $('stage-status');
+const fsRun = $('fs-run');
+const fsStop = $('fs-stop');
+fsRun.textContent = `▶ ${t('ui.executar')}`;
+fsRun.setAttribute('aria-label', t('ui.executarAria'));
+fsStop.textContent = `■ ${t('ui.parar')}`;
+fsStop.setAttribute('aria-label', t('ui.pararAria'));
+function showStatus(s) {
+  stageStatus.textContent = s === 'idle' ? t('cena.pronto') : t(`ui.status.${s}`);
+  stageStatus.dataset.state = s;
+  fsRun.disabled = s === 'running';
+  fsStop.disabled = s !== 'running';
+}
+showStatus('idle');
+const runProgram = () => { trace.clear(); runner.run(editor.getValue()); };
+const stopProgram = () => runner.stop();
+fsRun.addEventListener('click', runProgram);
+fsStop.addEventListener('click', stopProgram);
+
 const runner = new SketchRunner({
   bus,
   onSerial: (s) => serial.write(s),
   onError: (e) => { serial.error(e); if (mobile.matches) setMobileTab('serial'); },
   onClear: () => serial.clear(),
-  onStatus: (s) => toolbar.setStatus(s),
+  onStatus: (s) => { toolbar.setStatus(s); showStatus(s); },
 });
 toolbar = createToolbar($('toolbar'), {
-  onRun: () => runner.run(editor.getValue()),
-  onStop: () => runner.stop(),
-  onRestart: () => runner.restart(editor.getValue()),
+  onRun: runProgram,
+  onStop: stopProgram,
+  onRestart: () => { trace.clear(); runner.restart(editor.getValue()); },
   onSpeed: (x) => { runner.speed = x; },
 });
 toolbar.setStatus('idle');
+trace = createSignalTrace($('trace'), bus, () => runner.status === 'running');
 
+// ---------- Peças: rótulos numerados, diretório e localizador ----------
+function selectPart(part) {
+  cameraControls.focus(part.point, Math.max(6, part.r * 5));
+  locator.show(part.point, part.r);
+  labels.select(part.id);
+  directory.select(part.id);
+}
+const labels = createSceneLabels({ scene, engine, camera, root: $('labels'), onSelect: selectPart });
+const directory = createComponentDirectory($('directory'), { onSelect: selectPart });
+
+// Botões da câmera
+const camButtons = [
+  { text: '↶', label: t('cena.girarEsq'), run: () => cameraControls.rotate(-0.4) },
+  { text: '↷', label: t('cena.girarDir'), run: () => cameraControls.rotate(0.4) },
+  { text: '−', label: t('cena.afastar'), run: () => cameraControls.zoom(1.25) },
+  { text: '+', label: t('cena.aproximar'), run: () => cameraControls.zoom(0.8) },
+  { text: t('cena.resetar'), label: t('cena.resetar'), run: () => { locator.hide(); cameraControls.reset(); } },
+];
+for (const b of camButtons) {
+  const el = document.createElement('button');
+  el.type = 'button';
+  el.className = 'cam-btn';
+  el.textContent = b.text;
+  el.setAttribute('aria-label', b.label);
+  el.addEventListener('click', b.run);
+  $('cam-buttons').append(el);
+}
+const legendBtn = document.createElement('button');
+legendBtn.type = 'button';
+legendBtn.className = 'cam-btn';
+legendBtn.textContent = t('cena.legendas');
+legendBtn.setAttribute('aria-label', t('cena.legendasAria'));
+legendBtn.setAttribute('aria-pressed', 'false');
+legendBtn.addEventListener('click', () => {
+  labels.setShowAll(!labels.showAll);
+  legendBtn.setAttribute('aria-pressed', String(labels.showAll));
+});
+$('cam-buttons').prepend(legendBtn);
+
+// Tela cheia: usa a Fullscreen API; onde não existe (iPhone), cai para um modo que ocupa a janela toda.
+const stageEl = $('stage');
+const fsBtn = document.createElement('button');
+fsBtn.type = 'button';
+fsBtn.className = 'cam-btn';
+const nativeFs = !!stageEl.requestFullscreen;
+const isFull = () => (nativeFs ? document.fullscreenElement === stageEl : stageEl.classList.contains('stage-full'));
+function syncFullscreen() {
+  const on = isFull();
+  fsBtn.textContent = on ? t('cena.sairTelaCheia') : t('cena.telaCheia');
+  fsBtn.setAttribute('aria-label', on ? t('cena.sairTelaCheiaAria') : t('cena.telaCheiaAria'));
+  fsBtn.setAttribute('aria-pressed', String(on));
+  engine.resize();
+}
+function toggleFullscreen() {
+  if (nativeFs) {
+    if (isFull()) document.exitFullscreen();
+    else stageEl.requestFullscreen().catch(() => { stageEl.classList.add('stage-full'); syncFullscreen(); });
+  } else {
+    stageEl.classList.toggle('stage-full');
+    syncFullscreen();
+  }
+}
+fsBtn.addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', syncFullscreen);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && stageEl.classList.contains('stage-full')) { stageEl.classList.remove('stage-full'); syncFullscreen(); }
+});
+syncFullscreen();
+$('cam-buttons').append(fsBtn);
+
+// ---------- Lições ----------
 const panel = createLessonPanel($('side'), { onUseExample: (code) => editor.setValue(code) });
 const inputsPanel = createInputsPanel($('inputs'));
 let lessonScene = null;
@@ -101,7 +198,7 @@ function evaluateChallenge() {
   if (!runCheck(currentLesson.desafio.verificacao, bus.history, bus.clock())) return;
   solved = true;
   progress.markDone(currentLesson.id);
-  menu.refresh();
+  menus.forEach((m) => m.refresh());
   panel.setChallenge(true);
   serial.success(t('ui.desafioConcluido'));
 }
@@ -114,22 +211,34 @@ function openLesson(id) {
   runner.stop(true);
   serial.clear();
   toolbar.setStatus('idle');
+  showStatus('idle');
+  trace.clear();
+  locator.hide();
   lessonScene?.dispose();
   bus.reset();
   lessonScene = buildLessonScene(scene, bus, lesson);
   inputsPanel.render(lessonScene.inputs, bus, lesson.componentes.some((c) => c.tipo === 'buzzer'));
+  const parts = buildParts({ pinPositions, experiment: lessonScene.parts });
+  labels.setParts(parts);
+  labels.select(null);
+  directory.setParts(parts);
+  cameraControls.reset();
   editor.setValue(lesson.codigoInicial);
   panel.render(lesson);
   panel.setChallenge(solved);
-  menu.setCurrent(lesson.id);
+  menus.forEach((m) => m.setCurrent(lesson.id));
   if (mobile.matches) setMobileTab('lesson');
   history.replaceState(null, '', `#${lesson.id}`);
 }
 
-const menu = createLessonMenu($('lesson-menu'), {
+const menuOptions = {
   onSelect: openLesson,
-  onReset: () => { solved = false; panel.setChallenge(false); },
-});
+  onReset: () => { solved = false; panel.setChallenge(false); menus.forEach((m) => m.refresh()); },
+};
+const menus = [
+  createLessonMenu($('sidebar'), { ...menuOptions, inline: true }),
+  createLessonMenu($('lesson-menu'), menuOptions),
+];
 openLesson(location.hash.slice(1) || lessons[0].id);
 
 window.__bus = bus;

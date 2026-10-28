@@ -3,18 +3,21 @@ import { createBreadboard } from './breadboard.js';
 import { pinPositions } from './board.js';
 import { createWire } from './wires.js';
 import { createComponent } from '../components/index.js';
+import { componentPart, breadboardPart, wirePart } from './parts.js';
 
 /**
  * Monta protoboard, componentes e fios descritos pela lição.
  * `posicao: [x, z]` é relativa ao centro do protoboard (cm).
  * Pontos de ligação: "D13", "A0", "5V", "GND" (placa) ou "id.ancora" (componente).
- * @returns {{inputs: object[], dispose(): void}} `inputs` = controles que o aluno pode acionar
+ * @returns {{inputs: object[], parts: object[], dispose(): void}}
+ *   `inputs` = controles acionáveis pelo aluno; `parts` = peças localizáveis (componentes e fios)
  */
 export function buildLessonScene(scene, bus, lesson) {
   const breadboard = createBreadboard(scene);
   const comps = new Map();
   const wires = [];
   const inputs = [];
+  const parts = [breadboardPart(breadboard.surface.add(new Vector3(0, 0.1, 0)))];
 
   for (const def of lesson.componentes ?? []) {
     const [x, z] = def.posicao ?? [0, 0];
@@ -23,6 +26,7 @@ export function buildLessonScene(scene, bus, lesson) {
     comp.attach(bus);
     comps.set(def.id, comp);
     inputs.push(...(comp.inputs ?? []));
+    parts.push(componentPart(def, pos.add(new Vector3(0, 0.6, 0))));
   }
 
   function resolve(ref) {
@@ -35,11 +39,17 @@ export function buildLessonScene(scene, bus, lesson) {
   }
 
   for (const l of lesson.ligacoes ?? []) {
-    wires.push(createWire(scene, resolve(l.de), resolve(l.para), l.cor));
+    const a = resolve(l.de);
+    const b = resolve(l.para);
+    wires.push(createWire(scene, a, b, l.cor));
+    const mid = Vector3.Center(a, b);
+    mid.y += 0.5 + Vector3.Distance(a, b) * 0.1;
+    parts.push(wirePart(l, mid));
   }
 
   return {
     inputs,
+    parts,
     dispose() {
       wires.forEach((w) => w.dispose());
       comps.forEach((c) => c.dispose());

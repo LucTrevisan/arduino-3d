@@ -14,25 +14,36 @@
         <h1 id="app-title"></h1>
         <div id="lesson-menu" class="lesson-menu"></div>
       </header>
-      <div id="main">
-        <main id="stage">
-          <canvas id="scene" tabindex="0" aria-describedby="scene-help"></canvas>
-          <p id="scene-help" class="sr-only"></p>
-          <div id="inputs" class="inputs" hidden></div>
-        </main>
-        <aside id="side" class="panel"></aside>
+      <div id="layout">
+        <nav id="sidebar" class="sidebar"></nav>
+        <section id="center">
+          <main id="stage">
+            <canvas id="scene" tabindex="0" aria-describedby="scene-help"></canvas>
+            <p id="scene-help" class="sr-only"></p>
+            <div id="labels" class="labels"></div>
+            <div id="inputs" class="inputs" hidden></div>
+            <div id="stage-bar" class="stage-bar">
+              <span id="stage-status" class="stage-status" role="status"></span>
+              <span class="fs-only fs-run"><button type="button" class="cam-btn" id="fs-run"></button><button type="button" class="cam-btn" id="fs-stop"></button></span>
+              <div class="trace" id="trace-box"><span class="trace-title"></span><canvas id="trace" aria-hidden="true"></canvas></div>
+              <div id="cam-buttons" class="cam-buttons"></div>
+            </div>
+          </main>
+          <section id="directory" class="panel"></section>
+        </section>
+        <section id="right">
+          <aside id="side" class="panel"></aside>
+          <div id="code-panel" class="panel">
+            <div class="panel-head">
+              <h2 id="code-title"></h2>
+              <div id="toolbar" class="toolbar"></div>
+            </div>
+            <div id="editor" class="editor"></div>
+          </div>
+          <div id="serial-panel" class="panel"></div>
+        </section>
       </div>
       <div id="mobile-tabs" class="tablist" role="tablist"></div>
-      <section id="bottom">
-        <div id="code-panel" class="panel">
-          <div class="panel-head">
-            <h2 id="code-title"></h2>
-            <div id="toolbar" class="toolbar"></div>
-          </div>
-          <div id="editor" class="editor"></div>
-        </div>
-        <div id="serial-panel" class="panel"></div>
-      </section>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
